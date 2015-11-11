@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.sun.wen.lou.newtec.mapper.UserAccountMapper">
+
+	<sql id="Base_Column_List">
+		SMS_UUC_ACCOUNT_ID ,
+		SMS_UUC_ACCOUNT_NAME ,
+		DEPT ,
+		COMPANY ,
+		CREATE_DATE ,
+		STS ,
+		STS_DATE ,
+		IS_ADMIN,JOBNAME,EMAIL
+	</sql>
+	<insert id="save" parameterType="SmsUucAccountDTO">
+		INSERT INTO SMS_UUC_ACCOUNT (
+
+		<if test="smsUucAccountName!=null and smsUucAccountName!=''">
+			SMS_UUC_ACCOUNT_NAME ,
+		</if>
+		<if test="dept!=null and dept!=''">
+			DEPT ,
+		</if>
+		<if test="company!=null and company!=''">
+			COMPANY ,
+		</if>
+		<if test="createDate!=null and createDate!=''">
+			CREATE_DATE ,
+		</if>
+		<if test="sts!=null and sts!=''">
+			STS ,
+		</if>
+		<if test="stsDate!=null and stsDate!=''">
+			STS_DATE ,
+		</if>
+		<if test="isAdmin!=null and isAdmin!=''">
+			IS_ADMIN,
+		</if>
+		<if test="email!=null and email!=''">
+			EMAIL,
+		</if>
+		<if test="jobName!=null and jobName!=''">
+			JOBNAME,
+		</if>
+		<if test="smsUucAccountId!=null and smsUucAccountId!=''">
+			SMS_UUC_ACCOUNT_ID
+		</if>
+		) VALUES (
+		<if test="smsUucAccountName!=null and smsUucAccountName!=''">
+			#{smsUucAccountName} ,
+		</if>
+		<if test="dept!=null and dept!=''">
+			#{dept} ,
+		</if>
+		<if test="company!=null and company!=''">
+			#{company} ,
+		</if>
+		<if test="createDate!=null and createDate!=''">
+			#{createDate} ,
+		</if>
+		<if test="sts!=null and sts!=''">
+			#{sts} ,
+		</if>
+		<if test="stsDate!=null and stsDate!=''">
+			#{stsDate} ,
+		</if>
+		<if test="isAdmin!=null and isAdmin!=''">
+			#{isAdmin},
+		</if>
+		<if test="email!=null and email!=''">
+			#{email},
+		</if>
+		<if test="jobName!=null and jobName!=''">
+			#{jobName},
+		</if>
+		<if test="smsUucAccountId!=null and smsUucAccountId!=''">
+			#{smsUucAccountId}
+		</if>
+		)
+	</insert>
+
+	<update id="update" parameterType="SmsUucAccountDTO">
+		UPDATE SMS_UUC_ACCOUNT SET
+		<if test="smsUucAccountName!=null and smsUucAccountName!=''">
+			SMS_UUC_ACCOUNT_NAME =#{smsUucAccountName},
+		</if>
+		<if test="dept!=null and dept!=''">
+			DEPT = #{dept},
+		</if>
+		<if test="company!=null and company!=''">
+			COMPANY = #{company},
+		</if>
+		<if test="createDate!=null and createDate!=''">
+			CREATE_DATE = #{createDate},
+		</if>
+		<if test="stsDate!=null and stsDate!=''">
+			STS_DATE = #{stsDate},
+		</if>
+		<if test="isAdmin!=null and isAdmin!=''">
+			IS_ADMIN = #{isAdmin},
+		</if>
+		<if test="email!=null and email!=''">
+			EMAIL = #{email},
+		</if>
+		<if test="jobName!=null and jobName!=''">
+			JOBNAME=#{jobName},
+		</if>
+		<if test="sts!=null and sts!=''">
+			STS = #{sts}
+		</if>
+		WHERE
+		<if test="smsUucAccountId!=null and smsUucAccountId!=''">
+			SMS_UUC_ACCOUNT_ID = #{smsUucAccountId}
+		</if>
+	</update>
+
+	<update id="updateSts" parameterType="SmsUucAccountDTO">
+
+
+		UPDATE SMS_UUC_ACCOUNT SET
+		STS = #{sts}
+		WHERE 1=1
+		<if test="smsUucAccountId!=null and smsUucAccountId!=''">
+			and SMS_UUC_ACCOUNT_ID = #{smsUucAccountId}
+		</if>
+	</update>
+
+
+
+	<select id="queryList" resultType="SmsUucAccountDTO"
+		parameterType="SmsUucAccountDTO">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM SMS_UUC_ACCOUNT
+		WHERE
+		IS_ADMIN !='A' and STS !='P'
+		<if
+			test="SmsUucAccountDTO.smsUucAccountName!=null and SmsUucAccountDTO.smsUucAccountName!=''">
+			and SMS_UUC_ACCOUNT_NAME like CONCAT(CONCAT('%',
+			#{SmsUucAccountDTO.smsUucAccountName}),'%')
+		</if>
+		<if test="SmsUucAccountDTO.email!=null and SmsUucAccountDTO.email!=''">
+			and EMAIL like CONCAT(CONCAT('%',
+			#{SmsUucAccountDTO.email}),'%')
+		</if>
+	</select>
+
+	<select id="queryById" resultType="SmsUucAccountDTO"
+		parameterType="String">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM SMS_UUC_ACCOUNT
+		WHERE SMS_UUC_ACCOUNT_ID = #{smsUucAccountId}
+	</select>
+
+	<select id="queryListAll" resultType="SmsUucAccountDTO">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM SMS_UUC_ACCOUNT
+		WHERE
+		IS_ADMIN !='A' and STS !='P'
+	</select>
+	<select id="queryListForCommon" resultType="SmsUucAccountDTO"
+		parameterType="String">
+
+		SELECT DISTINCT
+		sua.SMS_UUC_ACCOUNT_ID,
+		sua.SMS_UUC_ACCOUNT_NAME
+		FROM
+		SMS_UUC_ACCOUNT sua,
+		SMS_RELEVANCE_ACCOUNT sra
+		WHERE
+		sua.SMS_UUC_ACCOUNT_ID = SRA.SMS_UUC_ACCOUNT_ID
+		AND SRA.STS = 'A' AND SUA.IS_ADMIN != 'A'
+		AND (
+		SUA.IS_ADMIN != 'Y'
+		OR SUA.SMS_UUC_ACCOUNT_ID = #{uucid}
+		)
+		AND SRA.SMS_ACCOUNT_ID IN (
+		SELECT
+		SRA.SMS_ACCOUNT_ID
+		FROM
+		SMS_UUC_ACCOUNT sua,
+		SMS_RELEVANCE_ACCOUNT sra,
+		SMS_ACCOUNT sa
+		WHERE
+		sua.SMS_UUC_ACCOUNT_ID = SRA.SMS_UUC_ACCOUNT_ID
+		and
+		sa.SMS_ACCOUNT_ID=SRA.SMS_ACCOUNT_ID
+		and sa.SMS_ACCOUNT_TYPE='marke'
+		AND SRA.STS = 'A'
+		AND SUA.SMS_UUC_ACCOUNT_ID = #{uucid}
+		)
+
+	</select>
+</mapper>
+

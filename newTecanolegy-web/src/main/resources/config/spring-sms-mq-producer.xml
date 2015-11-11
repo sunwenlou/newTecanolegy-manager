@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mq="http://www.credithc.com/schema/mq"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.credithc.com/schema/mq http://www.credithc.com/schema/mq/rocketmq.xsd">
+    
+    <!-- 生产者定义 -->
+	<mq:producer producerId="smsManagerProducer" namesrvAddr="${namesrvAddr}" groupName="sms2ManagerGroup" sendMsgTimeout="10000"/>
+		
+</beans>
+
